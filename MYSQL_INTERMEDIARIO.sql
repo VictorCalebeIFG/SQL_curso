@@ -11,6 +11,7 @@ FACULDADE: IFG
 	- ALTER TABLE 			 - (COMANDO QUE ALTERA UM VALOR DA TABELA)
 	- IN 				 - (COMANDO QUE PERMITE MAIS DE UMA IGUALDADE)
 	- ORDER BY 			 - (COMANDO QUE ORDENA A TABELA DE ACORDO COM UMA DAS COLUNAS)
+	- LEFT JOIN			 - (COMANDO QUE COLOCAR TABELAS LADO A LADO SEM DESCARTAR OS "MATCHS")
 	
 	- MODELO : https://github.com/VictorCalebeIFG/SQL_curso/blob/main/MODELO_INTERMEDIARIO.png
 */
@@ -263,3 +264,59 @@ SELECT * FROM CLIENTE ORDER BY CPF DESC;
 |         1 | JOSE    | M    | JOSE@GMAIL.COM    | 12121212     |
 +-----------+---------+------+-------------------+--------------+*/
 
+/*~~~~~~ ~~~~ ~~~~~ ~~~~~ LEFT JOIN ~~~~~~ ~~~~ ~~~~~ ~~~~~*/
+
+/*O LEFT JOIN PERMITE JUNTAR DUAS TABELAS UMA DO LADO DA OUTRA*/
+
+/*DIGAMOS QUE EU QUEIRA MOSTRAT TODOS OS REGISTROS OS COM NÚMERO
+E OS SEM NÚMERO NA MESMA TABELA:*/
+
+USE COMERCIO;
+
+SELECT IDCLIENTE,NOME,SEXO, NUMERO FROM CLIENTE C LEFT JOIN TELEFONE ON IDCLIENTE = ID_CLIENTE;
+/*
++-----------+----------+------+--------+
+| IDCLIENTE | NOME     | SEXO | NUMERO |
++-----------+----------+------+--------+
+|         1 | JOSE     | M    | 131313 |
+|         1 | JOSE     | M    | 121212 |
+|         2 | MARIA    | F    | 141414 |
+|         3 | CALEBE   | M    | NULL   |
+|         4 | RUTE     | F    | NULL   |
+|         5 | RODRIGO  | M    | NULL   |
+|        12 | MACACOJR | M    | NULL   |
++-----------+----------+------+--------+
+
+PERCEBA QUE  MUITOS REGISTROS NÃO POUSSUEM NÚMERO, LOGO PODEMOS FAZER UM IFNULL
+*/
+
+SELECT IDCLIENTE,NOME,SEXO,IFNULL(NUMERO,"------") FROM CLIENTE LEFT JOIN TELEFONE ON IDCLIENTE = ID_CLIENTE;
+/*
++-----------+----------+------+-------------------------+
+| IDCLIENTE | NOME     | SEXO | IFNULL(NUMERO,"------") |
++-----------+----------+------+-------------------------+
+|         1 | JOSE     | M    | 131313                  |
+|         1 | JOSE     | M    | 121212                  |
+|         2 | MARIA    | F    | 141414                  |
+|         3 | CALEBE   | M    | ------                  |
+|         4 | RUTE     | F    | ------                  |
+|         5 | RODRIGO  | M    | ------                  |
+|        12 | MACACOJR | M    | ------                  |
++-----------+----------+------+-------------------------+
+PERCEBA QUE FICOU UM "IFNULL" NO NOME DA COLUNA, PARA ARRUMAR ISSO BASTA COLOCAR UM "ALIAS"
+*/
+
+SELECT IDCLIENTE,NOME,SEXO,IFNULL(NUMERO,"------") AS NUMERO FROM CLIENTE LEFT JOIN TELEFONE ON IDCLIENTE = ID_CLIENTE;
+/*
++-----------+----------+------+--------+
+| IDCLIENTE | NOME     | SEXO | NUMERO |
++-----------+----------+------+--------+
+|         1 | JOSE     | M    | 131313 |
+|         1 | JOSE     | M    | 121212 |
+|         2 | MARIA    | F    | 141414 |
+|         3 | CALEBE   | M    | ------ |
+|         4 | RUTE     | F    | ------ |
+|         5 | RODRIGO  | M    | ------ |
+|        12 | MACACOJR | M    | ------ |
++-----------+----------+------+--------+
+*/
